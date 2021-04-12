@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>Label</key>
+        <string>com.tandav.battery_stats</string>
+        <key>ProgramArguments</key>
+        <array>
+            <string>/usr/local/opt/python@3.9/bin/python3</string>
+            <string>/Users/tandav/GoogleDrive/projects/n_tabs/n_tabs.py</string>
+        </array>
+
+        <key>EnvironmentVariables</key>
+        <dict>
+            <key>PYTHONPATH</key><string>/Users/tandav/GoogleDrive/projects/dotfiles/bin</string>
+        </dict>
+        <!-- <key>StandardOutPath</key><string>/Users/tandav/Desktop/out.txt</string> -->
+        <!-- <key>StandardErrorPath</key><string>/Users/tandav/Desktop/err.txt</string> -->
+        <key>WorkingDirectory</key><string>/Users/tandav/GoogleDrive/projects/n_tabs</string>
+        <key>StartInterval</key><integer>120</integer><!-- <integer>10</integer> -->
+        <key>RunAtLoad</key><true/>
+    </dict>
+</plist>
