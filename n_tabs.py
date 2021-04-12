@@ -1,18 +1,7 @@
-import subprocess
 import datetime
 import macos
 
-js_code = '''\
-let browser = Application('Google Chrome')
-let n_tabs = 0
-for (let i = 0; i < browser.windows.length; i++) {
-    n_tabs += browser.windows[i].tabs.length
-}
-'''
-
-cmd = 'osascript', '-l', 'JavaScript', '-e', js_code
-n_tabs = int(subprocess.check_output(cmd, text=True).strip())
-
+n_tabs = macos.n_tabs()
 
 with open('n_tabs.csv') as fd:
     for line in fd:
