@@ -1,7 +1,7 @@
 <h1>How many tabs are opened right now?</h1>
-<span id='n_tabs'></span>
-<br>
-<span id='updated'></span>
+<span id='n_tabs'></span><br>
+<span id='stats'></span><br>
+<span id='updated'></span><br>
 
 
 <script> 
@@ -21,6 +21,7 @@ fetch('https://gist.githubusercontent.com/tandav/b1a422d49a41f8364c5a2c862bb0d5b
     .then(response => response.json())
     .then(json => { 
         document.getElementById('n_tabs').textContent = json.n_tabs
+        document.getElementById('stats').textContent = 'mean: ' + json.mean + ' std: ' + json.std
         document.getElementById('updated').textContent = 'updated: ' + ago((new Date).getTime() - new Date(json.updated_at))
     })
 </script>
