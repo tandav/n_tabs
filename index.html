@@ -21,7 +21,7 @@ fetch('https://gist.githubusercontent.com/tandav/b1a422d49a41f8364c5a2c862bb0d5b
     .then(response => response.json())
     .then(json => { 
         document.getElementById('n_tabs').textContent = json.n_tabs
-        document.getElementById('stats').textContent = 'mean: ' + json.mean + ' std: ' + json.std
+        document.getElementById('stats').textContent = 'max: ' + json.max + ' min: '+ json.min + 'mean: ' + json.mean + ' std: ' + json.std + ' median: ' + json.median
         document.getElementById('updated').textContent = 'updated: ' + ago((new Date).getTime() - new Date(json.updated_at))
     })
 </script>

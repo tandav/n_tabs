@@ -20,8 +20,11 @@ if n_tabs != n_tabs_old:
         json.dump({
             'n_tabs' : n_tabs,
             'updated_at': int(now.timestamp() * 1000),
+            'max': max(tabs),
+            'min': min(tabs),
             'mean': int(statistics.mean(tabs)),
             'std': int(statistics.stdev(tabs)),
+            'median': int(statistics.median(tabs)),
         }, fd)
         
     subprocess.run(('sh', 'update.sh'), cwd='/Users/tandav/Downloads/n_tabs_json')
