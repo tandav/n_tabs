@@ -11,6 +11,7 @@ with open('n_tabs.csv') as fd:
 n_tabs_old = tabs[-1]
 
 if n_tabs != n_tabs_old:
+    tabs.append(n_tabs)
     now = datetime.datetime.now()
 
     with open('n_tabs.csv', 'a') as fd:
