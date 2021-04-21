@@ -1,10 +1,10 @@
 import datetime
-import macos
+import macos # https://github.com/tandav/dotfiles/blob/master/bin/macos.py
 import json
 import subprocess
 import statistics
 
-n_tabs = macos.n_tabs()
+n_tabs, n_windows = macos.n_tabs(n_windows=True)
 
 with open('n_tabs.csv') as fd:
     tabs = [int(line.split(',')[1]) for line in fd]
@@ -20,6 +20,7 @@ if n_tabs != n_tabs_old:
     with open('/Users/tandav/Downloads/n_tabs_json/n_tabs.json', 'w') as fd:
         json.dump({
             'n_tabs' : n_tabs,
+            'n_windows': n_windows,
             'updated_at': int(now.timestamp() * 1000),
             'max': max(tabs),
             'min': min(tabs),

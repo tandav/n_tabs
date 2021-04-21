@@ -1,7 +1,11 @@
 <h1>How many tabs are opened right now?</h1>
-<span id='n_tabs'></span><br>
-<span id='stats'></span><br>
-<span id='updated'></span><br>
+<div class='big_number', id='n_tabs'></div>
+<div id='stats'></div>
+
+<h1>How many windows?</h1>
+<div class='big_number', id='n_windows'></div>
+
+<div id='updated'></div>
 <a href='https://github.com/tandav/n_tabs'>github</a>
 
 <script> 
@@ -18,16 +22,18 @@ const ago = e => {
 }
 
 fetch('https://gist.githubusercontent.com/tandav/b1a422d49a41f8364c5a2c862bb0d5b4/raw/n_tabs.json')
-    .then(response => response.json())
-    .then(json => { 
-        document.getElementById('n_tabs').textContent = json.n_tabs
-        document.getElementById('stats').textContent = 'max: ' + json.max + ' min: '+ json.min + 'mean: ' + json.mean + ' std: ' + json.std + ' median: ' + json.median
-        document.getElementById('updated').textContent = 'updated: ' + ago((new Date).getTime() - new Date(json.updated_at))
-    })
+.then(response => response.json())
+.then(json => { 
+    document.getElementById('n_tabs').textContent = json.n_tabs
+    document.getElementById('stats').textContent = 'min='+ json.min + ' max=' + json.max + ' mean=' + json.mean + ' std=' + json.std + ' median=' + json.median
+    // document.getElementById('stats').textContent = JSON.stringify(json)
+    document.getElementById('n_windows').textContent = json.n_windows
+    document.getElementById('updated').textContent = 'updated: ' + ago((new Date).getTime() - new Date(json.updated_at))
+})
 </script>
 
 <style>
-#n_tabs {
+.big_number {
     font-size: 36pt;
 }
 </style>
