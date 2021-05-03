@@ -1,0 +1,15 @@
+news.ycombinator.com
+hn.algolia.com
+twitter.com
+tweetdeck.twitter.com
+google.com
+www.youtube.com
+music.youtube.com
+github.com
+localhost
+www.last.fm
+soundcloud.com
+www.twitch.tv
+www.reddit.com
+docs.python.org
+trello.com
