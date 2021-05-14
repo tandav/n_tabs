@@ -2,7 +2,7 @@ news.ycombinator.com
 hn.algolia.com
 twitter.com
 tweetdeck.twitter.com
-google.com
+www.google.com
 www.youtube.com
 music.youtube.com
 github.com
@@ -12,4 +12,18 @@ soundcloud.com
 www.twitch.tv
 www.reddit.com
 docs.python.org
+pypi.org
 trello.com
+duckduckgo.com
+stackoverflow.com
+stats.stackexchange.com
+unix.stackexchange.com
+superuser.com
+serverfault.com
+en.wikipedia.org
+ru.wikipedia.org
+translate.google.com
+arxiv.org
+tandav.github.io
+drive.google.com
+www.bbc.co.uk
