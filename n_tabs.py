@@ -45,6 +45,7 @@ if n_tabs != n_tabs_old:
             'mean': int(statistics.mean(n_tabs_history)),
             'std': int(statistics.stdev(n_tabs_history)),
             'median': int(statistics.median(n_tabs_history)),
+            'n': len(n_tabs_history),
             'hosts': hosts,
         }, fd)
 
