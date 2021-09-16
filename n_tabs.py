@@ -8,7 +8,7 @@ from urllib.parse import urlparse
 
 whitelist = set(open('whitelist.txt').read().split())
 
-tabs = macos.tabs()
+tabs = macos.tabs(browser='Brave Browser')
 
 n_tabs = 0
 n_windows = 0
@@ -35,7 +35,7 @@ if n_tabs != n_tabs_old:
     with open('n_tabs.csv', 'a') as fd:
         print(f"{now.strftime('%Y-%m-%d %H:%M:%S')}", n_tabs, sep=',', file=fd)
 
-    with open('/Users/tandav/Downloads/n_tabs_json/n_tabs.json', 'w') as fd:
+    with open('n_tabs_json/n_tabs.json', 'w') as fd:
         json.dump({
             'n_tabs': n_tabs,
             'n_windows': n_windows,
@@ -49,4 +49,4 @@ if n_tabs != n_tabs_old:
             'hosts': hosts,
         }, fd)
 
-    subprocess.run(('sh', 'update.sh'), cwd='/Users/tandav/Downloads/n_tabs_json')
+    subprocess.run(('scp', 'n_tabs_json/n_tabs.json', 'or2:n_tabs_json'))
