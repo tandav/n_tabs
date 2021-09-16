@@ -23,7 +23,7 @@ const ago = e => {
   return e < 0 ? 'just now' : t < 10 ? 'just now' : t < 45 ? t + ' seconds ago' : t < 90 ? 'a minute ago' : n < 45 ? n + ' minutes ago' : n < 90 ? 'an hour ago' : r < 24 ? r + ' hours ago' : r < 36 ? 'a day ago' : o < 30 ? o + ' days ago' : o < 45 ? 'a month ago' : i < 12 ? i + ' months ago' : i < 18 ? 'a year ago' : a + ' years ago'
 }
 
-fetch('https://tandav.me:8000/n_tabs.json')
+fetch('http://tandav.me:8000/n_tabs.json')
 .then(response => response.json())
 .then(json => { 
     document.getElementById('n_tabs').textContent = json.n_tabs
