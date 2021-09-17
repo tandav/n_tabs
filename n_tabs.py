@@ -4,6 +4,7 @@ import json
 import subprocess
 import statistics
 import collections
+import requests
 from urllib.parse import urlparse
 
 whitelist = set(open('whitelist.txt').read().split())
@@ -35,18 +36,15 @@ if n_tabs != n_tabs_old:
     with open('n_tabs.csv', 'a') as fd:
         print(f"{now.strftime('%Y-%m-%d %H:%M:%S')}", n_tabs, sep=',', file=fd)
 
-    with open('n_tabs_json/n_tabs.json', 'w') as fd:
-        json.dump({
-            'n_tabs': n_tabs,
-            'n_windows': n_windows,
-            'updated_at': int(now.timestamp() * 1000),
-            'max': max(n_tabs_history),
-            'min': min(n_tabs_history),
-            'mean': int(statistics.mean(n_tabs_history)),
-            'std': int(statistics.stdev(n_tabs_history)),
-            'median': int(statistics.median(n_tabs_history)),
-            'n': len(n_tabs_history),
-            'hosts': hosts,
-        }, fd)
-
-    subprocess.run(('scp', 'n_tabs_json/n_tabs.json', 'or2:n_tabs_json'))
+    requests.post('https://tandav.me:5002', json={
+        'n_tabs': n_tabs,
+        'n_windows': n_windows,
+        'updated_at': int(now.timestamp()),
+        'max': max(n_tabs_history),
+        'min': min(n_tabs_history),
+        'mean': int(statistics.mean(n_tabs_history)),
+        'std': int(statistics.stdev(n_tabs_history)),
+        'median': int(statistics.median(n_tabs_history)),
+        'n': len(n_tabs_history),
+        'hosts': hosts,
+    })

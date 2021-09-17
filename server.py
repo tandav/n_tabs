@@ -59,7 +59,7 @@ def root():
     <h1>How many browser windows?</h1>
     <div class='big_number', id='n_windows'>{tabs.n_windows}</div>
     
-    <div id='updated'>updated: {ago(int(datetime.datetime.now().timestamp() * 1000) - tabs.updated_at)}</div>
+    <div id='updated'>updated: {ago(int(datetime.datetime.now().timestamp()) - tabs.updated_at)}</div>
     <h3>Hosts stats:</h3>
     <pre id='hosts'>{json.dumps(tabs.hosts)}</pre>
     <a href='https://github.com/tandav/n_tabs'>github</a>
