@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
+from pydantic import BaseModel
+from typing import Optional
 import datetime
 import json
 
@@ -27,26 +29,39 @@ def ago(e):
     elif i < 18: return            'a year ago'
     else:        return str(a) +   ' years ago'
 
+
 app = FastAPI()
-tabs = {
-    'n_tabs': None, 'n_windows': None, 'updated_at': int(datetime.datetime.now().timestamp() * 1000),
-    'max': None, 'min': None, 'mean': None, 'std': None, 'median': None,
-    'n': None, 'hosts': None,
-}
+
+
+class Tabs(BaseModel):
+    n_tabs: Optional[int] = None
+    n_windows: Optional[int] = None
+    updated_at: Optional[int] = int(datetime.datetime.now().timestamp() * 1000)
+    min: Optional[int] = None
+    max: Optional[int] = None
+    mean: Optional[int] = None
+    std: Optional[int] = None
+    median: Optional[int] = None
+    n: Optional[int] = None
+    hosts: Optional[dict[str, int]] = None
+
+
+tabs = Tabs()
+
 
 @app.get('/', response_class=HTMLResponse)
 def root():
     return f'''
     <h1>How many tabs are opened right now?</h1>
-    <div class='big_number', id='n_tabs'>{tabs['n_tabs']}</div>
-    <div id='stats'>min={tabs['min']} max={tabs['max']} mean={tabs['mean']} std={tabs['std']} median={tabs['median']} n={tabs['n']}</div>
+    <div class='big_number', id='n_tabs'>{tabs.n_tabs}</div>
+    <div id='stats'>min={tabs.min} max={tabs.max} mean={tabs.mean} std={tabs.std} median={tabs.median} n={tabs.n}</div>
     
     <h1>How many browser windows?</h1>
-    <div class='big_number', id='n_windows'>{tabs['n_windows']}</div>
+    <div class='big_number', id='n_windows'>{tabs.n_windows}</div>
     
-    <div id='updated'>updated: {ago(int(datetime.datetime.now().timestamp() * 1000) - tabs['updated_at'])}</div>
+    <div id='updated'>updated: {ago(int(datetime.datetime.now().timestamp() * 1000) - tabs.updated_at)}</div>
     <h3>Hosts stats:</h3>
-    <pre id='hosts'>{json.dumps(tabs['hosts'])}</pre>
+    <pre id='hosts'>{json.dumps(tabs.hosts)}</pre>
     <a href='https://github.com/tandav/n_tabs'>github</a>
     ''' + '''
     <style>
@@ -58,3 +73,10 @@ def root():
     }
     </style>
     '''
+
+
+@app.post('/')
+def post_tabs(new_tabs: Tabs):
+    global tabs
+    tabs = new_tabs
+    return {'status': 'success'}
