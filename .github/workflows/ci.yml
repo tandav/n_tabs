@@ -1,6 +1,10 @@
-name: build
+name: ci
 
-on: push
+on:
+  push:
+    branches:
+      - master
+
 
 jobs:
   build:
@@ -19,3 +23,11 @@ jobs:
         with:
           push: true
           tags: tandav/n_tabs:latest
+
+  deploy:
+    name: deploy to server
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - run: 'curl -X POST -H "token: ${{ secrets.RESTART_HOOK_TOKEN }}" ${{ secrets.RESTART_HOOK_URL }}'
