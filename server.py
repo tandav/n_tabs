@@ -72,6 +72,7 @@ def root():
     }
     pre {
         background-color: rgba(0, 0, 0, 0.05);
+        width: 600px;
     }
     </style>
     '''
