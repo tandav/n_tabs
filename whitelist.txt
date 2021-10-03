@@ -29,3 +29,5 @@ drive.google.com
 www.bbc.co.uk
 workflowy.com
 podcasts.google.com
+hub.docker.com
+tandav.me

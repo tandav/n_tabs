@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from typing import Optional
 import datetime
+import operator
 import json
 
 
@@ -51,6 +52,7 @@ tabs = Tabs()
 
 @app.get('/', response_class=HTMLResponse)
 def root():
+    hosts = '\n'.join(f'{k} {v}' for k, v in sorted(tabs.hosts.items(), key=operator.itemgetter(1), reverse=True)) if tabs.hosts else 'None'
     return f'''
     <h1>How many tabs are opened right now?</h1>
     <div class='big_number', id='n_tabs'>{tabs.n_tabs}</div>
@@ -61,7 +63,7 @@ def root():
     
     <div id='updated'>updated: {ago(int(datetime.datetime.now().timestamp()) - tabs.updated_at)}</div>
     <h3>Hosts stats:</h3>
-    <pre id='hosts'>{json.dumps(tabs.hosts)}</pre>
+    <pre id='hosts'>{hosts}</pre>
     <a href='https://github.com/tandav/n_tabs'>github</a>
     ''' + '''
     <style>
