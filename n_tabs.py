@@ -154,8 +154,15 @@ def backup_status():
         uri=True,
         detect_types=sqlite3.PARSE_COLNAMES,
     ) as con:
-        t, = con.cursor().execute('select max(time) as "latest_backup [timestamp]" from archivemodel').fetchone()
-        return int(t.timestamp())
+        timestamp, duration, size = con.cursor().execute('''
+        select time as "latest_backup [timestamp]"
+             , cast(round(duration) as int)
+             , round(size / 1e6, 1)
+        from archivemodel
+        order by time desc
+        ''').fetchone()
+        timestamp = int(timestamp.timestamp())
+        return {'timestamp': timestamp, 'duration': duration, 'size': size}
 
 def main() -> int:
     now = datetime.datetime.now()
