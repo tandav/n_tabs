@@ -4,10 +4,43 @@ import macos # https://github.com/tandav/dotfiles/blob/master/bin/macos.py
 import json
 import sqlite3
 import subprocess
-import statistics
 import collections
 import requests
 from urllib.parse import urlparse
+from pathlib import Path
+
+DATABASE_FILE = 'n_tabs.db'
+
+def sqlite_connect():
+    conn = sqlite3.connect(DATABASE_FILE, detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+    return conn
+
+def create_if_not_exists():
+    if not Path(DATABASE_FILE).exists():
+        conn = sqlite_connect()
+        c = conn.cursor()
+        c.execute('''
+        CREATE TABLE tabs (timestamp timestamp primary key, n_tabs integer)
+        ''')
+        conn.commit()
+        conn.close()
+        print('initialized database file', DATABASE_FILE)
+
+
+def insert(timestamp: datetime.datetime, n_tabs: int) -> None:
+    conn = sqlite_connect()
+    c = conn.cursor()
+    c.execute("insert into tabs values (?, ?)", (timestamp, n_tabs))
+    conn.commit()
+    conn.close()
+    print(f'inserted row, {n_tabs=}')
+
+
+def get_n_tabs_history():
+    conn = sqlite_connect()
+    c = conn.cursor()
+    c.execute("select n_tabs from tabs")
+    return [n for n, in c.fetchall()]
 
 
 def tabs_status(now):
@@ -26,24 +59,38 @@ def tabs_status(now):
                 host = 'etc'
             hosts[host] += 1
 
-    with open('n_tabs.csv') as fd:
-        n_tabs_history = [int(line.split(',')[1]) for line in fd]
+    n_tabs_history = get_n_tabs_history()
     n_tabs_old = n_tabs_history[-1]
 
     if n_tabs != n_tabs_old:
         n_tabs_history.append(n_tabs)
-        with open('n_tabs.csv', 'a') as fd:
-            print(f"{now.strftime('%Y-%m-%d %H:%M:%S')}", n_tabs, sep=',', file=fd)
+        insert(now, n_tabs)
+
+    with sqlite3.connect(
+        DATABASE_FILE,
+        detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
+    ) as con:
+        con.enable_load_extension(True)
+        con.load_extension('./stats.dylib')  # https://github.com/nalgeon/sqlean/blob/main/docs/stats.md
+        max_, min_, mean, std, median, n = con.cursor().execute('''
+        select max(n_tabs)
+             , min(n_tabs)
+             , cast(avg(n_tabs) as int)
+             , cast(stddev(n_tabs) as int)
+             , median(n_tabs)
+             , count(1)
+          from tabs
+        ''').fetchone()
 
     return {
         'n_tabs': n_tabs,
         'n_windows': n_windows,
-        'max': max(n_tabs_history),
-        'min': min(n_tabs_history),
-        'mean': int(statistics.mean(n_tabs_history)),
-        'std': int(statistics.stdev(n_tabs_history)),
-        'median': int(statistics.median(n_tabs_history)),
-        'n': len(n_tabs_history),
+        'max': max_,
+        'min': min_,
+        'mean': mean,
+        'std': std,
+        'median': median,
+        'n': n,
         'hosts': hosts,
     }
 
