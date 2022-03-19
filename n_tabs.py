@@ -2,6 +2,7 @@ import datetime
 import psutil
 import macos # https://github.com/tandav/dotfiles/blob/master/bin/macos.py
 import json
+import os
 import sqlite3
 import subprocess
 import collections
@@ -48,14 +49,22 @@ def tabs_status(now):
     n_windows = 0
     hosts = collections.Counter()
     whitelist = set(open('whitelist.txt').read().split())
-    tabs = macos.tabs(browser='Brave Browser')
+    whitelist_full_url = set(open('whitelist_full_url.txt').read().split())
+    assert whitelist_full_url <= whitelist
+
+    tabs = macos.tabs(browser=os.environ['BROWSER'])
 
     for window in tabs:
         n_windows += 1
         for title, url in window:
             n_tabs += 1
-            host = urlparse(url).hostname
-            if host not in whitelist:
+            parsed = urlparse(url)
+            host = parsed.hostname
+            if host == 'localhost':
+                host = parsed.netloc
+            elif host in whitelist_full_url:
+                host = url
+            elif host not in whitelist:
                 host = 'etc'
             hosts[host] += 1
 
@@ -141,8 +150,9 @@ def uptime_status():
     }
 
 def network_status():
+    J = json.loads(subprocess.check_output(('system_profiler', '-json', 'SPNetworkDataType')))['SPNetworkDataType']
     return {
-        'lan_ip': json.loads(subprocess.check_output(('system_profiler', '-json', 'SPNetworkDataType')))['SPNetworkDataType'][0]['ip_address'][0],
+        'lan_ip': next(x for x in J if x['_name'] == 'Wi-Fi')['ip_address'][0]
     }
 
 def os_status():
@@ -175,7 +185,7 @@ def main() -> int:
         'os_version': os_status(),
         'latest_backup': backup_status(),
     }
-    requests.post('https://tandav.me:5002', json=data)
+    requests.post('https://status.tandav.me', json=data)
     return 0
 
 
